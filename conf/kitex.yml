@@ -1,4 +1,4 @@
-Address: ":8889"
+Address: ":8888"
 EnableDebugServer: true
 DebugServerPort: "18888"
 Log:
