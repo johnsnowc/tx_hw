@@ -1223,22 +1223,31 @@ func (p *PaymentsByRoomIDRequest) Field1DeepEqual(src int64) bool {
 }
 
 type PaymentsByRoomIDResponse struct {
-	Sum float64 `thrift:"sum,1" json:"sum"`
+	Message string  `thrift:"message,1" json:"message"`
+	Sum     float64 `thrift:"sum,2" json:"sum"`
 }
 
 func NewPaymentsByRoomIDResponse() *PaymentsByRoomIDResponse {
 	return &PaymentsByRoomIDResponse{}
 }
 
+func (p *PaymentsByRoomIDResponse) GetMessage() (v string) {
+	return p.Message
+}
+
 func (p *PaymentsByRoomIDResponse) GetSum() (v float64) {
 	return p.Sum
+}
+func (p *PaymentsByRoomIDResponse) SetMessage(val string) {
+	p.Message = val
 }
 func (p *PaymentsByRoomIDResponse) SetSum(val float64) {
 	p.Sum = val
 }
 
 var fieldIDToName_PaymentsByRoomIDResponse = map[int16]string{
-	1: "sum",
+	1: "message",
+	2: "sum",
 }
 
 func (p *PaymentsByRoomIDResponse) Read(iprot thrift.TProtocol) (err error) {
@@ -1261,8 +1270,18 @@ func (p *PaymentsByRoomIDResponse) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.DOUBLE {
+			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.DOUBLE {
+				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -1301,6 +1320,15 @@ ReadStructEndError:
 }
 
 func (p *PaymentsByRoomIDResponse) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Message = v
+	}
+	return nil
+}
+
+func (p *PaymentsByRoomIDResponse) ReadField2(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadDouble(); err != nil {
 		return err
 	} else {
@@ -1317,6 +1345,10 @@ func (p *PaymentsByRoomIDResponse) Write(oprot thrift.TProtocol) (err error) {
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
 			goto WriteFieldError
 		}
 
@@ -1339,10 +1371,10 @@ WriteStructEndError:
 }
 
 func (p *PaymentsByRoomIDResponse) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("sum", thrift.DOUBLE, 1); err != nil {
+	if err = oprot.WriteFieldBegin("message", thrift.STRING, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteDouble(p.Sum); err != nil {
+	if err := oprot.WriteString(p.Message); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1353,6 +1385,23 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *PaymentsByRoomIDResponse) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("sum", thrift.DOUBLE, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteDouble(p.Sum); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
 func (p *PaymentsByRoomIDResponse) String() string {
@@ -1368,13 +1417,23 @@ func (p *PaymentsByRoomIDResponse) DeepEqual(ano *PaymentsByRoomIDResponse) bool
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.Sum) {
+	if !p.Field1DeepEqual(ano.Message) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.Sum) {
 		return false
 	}
 	return true
 }
 
-func (p *PaymentsByRoomIDResponse) Field1DeepEqual(src float64) bool {
+func (p *PaymentsByRoomIDResponse) Field1DeepEqual(src string) bool {
+
+	if strings.Compare(p.Message, src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *PaymentsByRoomIDResponse) Field2DeepEqual(src float64) bool {
 
 	if p.Sum != src {
 		return false

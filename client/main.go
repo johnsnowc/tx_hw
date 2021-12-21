@@ -18,14 +18,17 @@ package main
 import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
-	"tx_demo/kitex_gen/api"
-	"tx_demo/kitex_gen/api/transaction"
-	"tx_demo/model"
+	"tx_hw/kitex_gen/api"
+	"tx_hw/kitex_gen/api/transaction"
+	"tx_hw/model"
 )
+
+var DB *gorm.DB
 
 func main() {
 	client, err := transaction.NewClient("transaction", client.WithHostPorts("0.0.0.0:8888"))
@@ -45,9 +48,11 @@ func main() {
 			RoomId:     tx.RoomID,
 			ItemId:     tx.ItemID,
 			Payment:    tx.Payment,
-			CreateTime: tx.CreateTime.String(),
+			CreateTime: tx.CreateTime.Format("2006-01-02 15:04:05"),
 			UserId:     tx.UserID,
 		}
+		log.Println(tx.CreateTime)
+		log.Println(tx.CreateTime.String())
 		resp, err := client.Add(context, req)
 		if err != nil {
 			context.JSON(http.StatusBadRequest, gin.H{
@@ -98,4 +103,5 @@ func main() {
 		}
 	})
 
+	r.Run()
 }

@@ -1032,8 +1032,22 @@ func (p *PaymentsByRoomIDResponse) FastRead(buf []byte) (int, error) {
 		}
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.DOUBLE {
+			if fieldTypeId == thrift.STRING {
 				l, err = p.FastReadField1(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.DOUBLE {
+				l, err = p.FastReadField2(buf[offset:])
 				offset += l
 				if err != nil {
 					goto ReadFieldError
@@ -1083,6 +1097,20 @@ ReadStructEndError:
 func (p *PaymentsByRoomIDResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
+	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.Message = v
+
+	}
+	return offset, nil
+}
+
+func (p *PaymentsByRoomIDResponse) FastReadField2(buf []byte) (int, error) {
+	offset := 0
+
 	if v, l, err := bthrift.Binary.ReadDouble(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -1103,6 +1131,7 @@ func (p *PaymentsByRoomIDResponse) FastWriteNocopy(buf []byte, binaryWriter bthr
 	offset := 0
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "PaymentsByRoomIDResponse")
 	if p != nil {
+		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
@@ -1115,6 +1144,7 @@ func (p *PaymentsByRoomIDResponse) BLength() int {
 	l += bthrift.Binary.StructBeginLength("PaymentsByRoomIDResponse")
 	if p != nil {
 		l += p.field1Length()
+		l += p.field2Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -1123,7 +1153,16 @@ func (p *PaymentsByRoomIDResponse) BLength() int {
 
 func (p *PaymentsByRoomIDResponse) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "sum", thrift.DOUBLE, 1)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "message", thrift.STRING, 1)
+	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.Message)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
+func (p *PaymentsByRoomIDResponse) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "sum", thrift.DOUBLE, 2)
 	offset += bthrift.Binary.WriteDouble(buf[offset:], p.Sum)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -1132,7 +1171,16 @@ func (p *PaymentsByRoomIDResponse) fastWriteField1(buf []byte, binaryWriter bthr
 
 func (p *PaymentsByRoomIDResponse) field1Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("sum", thrift.DOUBLE, 1)
+	l += bthrift.Binary.FieldBeginLength("message", thrift.STRING, 1)
+	l += bthrift.Binary.StringLengthNocopy(p.Message)
+
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
+func (p *PaymentsByRoomIDResponse) field2Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("sum", thrift.DOUBLE, 2)
 	l += bthrift.Binary.DoubleLength(p.Sum)
 
 	l += bthrift.Binary.FieldEndLength()

@@ -1,9 +1,11 @@
-module tx_demo
+module tx_hw
 
 go 1.17
 
+replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
+
 require (
-	github.com/apache/thrift v0.15.0
+	github.com/apache/thrift v0.13.0
 	github.com/cloudwego/kitex v0.0.8
 	github.com/gin-gonic/gin v1.7.7
 	github.com/jinzhu/gorm v1.9.16
@@ -42,5 +44,3 @@ require (
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
-
-replace github.com/apache/thrift => github.com/apache/thrift v0.13.0

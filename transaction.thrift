@@ -28,7 +28,8 @@ struct PaymentsByRoomIDRequest {
 }
 
 struct PaymentsByRoomIDResponse {
-    1: double sum
+    1: string message
+    2: double sum
 }
 
 service Transaction {

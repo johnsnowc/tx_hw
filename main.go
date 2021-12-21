@@ -2,13 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"log"
-	api "tx_demo/kitex_gen/api/transaction"
-	"tx_demo/model"
+	api "tx_hw/kitex_gen/api/transaction"
+	"tx_hw/model"
 )
-
-var DB *gorm.DB
 
 func main() {
 	err := model.InitMySQL()
@@ -18,10 +15,10 @@ func main() {
 		fmt.Println("connect mysql success")
 	}
 	// 延迟关闭数据库
-	defer DB.Close()
+	defer model.DB.Close()
 
 	// 模型关闭 自动迁移【把结构体和数据表进行对应】
-	DB.AutoMigrate(&model.Transaction{})
+	model.DB.AutoMigrate(&model.Transaction{})
 
 	svr := api.NewServer(new(TransactionImpl))
 

@@ -3,7 +3,7 @@ package transaction
 
 import (
 	"github.com/cloudwego/kitex/server"
-	"tx_demo/kitex_gen/api"
+	"tx_hw/kitex_gen/api"
 )
 
 // NewServer creates a server.Server with the given handler and options.
