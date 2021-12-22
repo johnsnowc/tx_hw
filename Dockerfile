@@ -1,5 +1,5 @@
 FROM centos:7
 COPY server /root/server
-COPY client-rpc /root/client-rpc
+COPY /client/client /root/client
 EXPOSE 8080
 CMD /root/server
